@@ -1,24 +1,30 @@
 class ViewManager {
     constructor(app) {
         this.app = app;
-        this.currentView = 'calendar';
+        this.currentView = 'dashboard';
         this.views = {
-            calendar: document.querySelector('.calendar-view'),
-            tasks: document.querySelector('.tasks-view'),
-            pomodoro: document.querySelector('.pomodoro-view')
+            dashboard: new DashboardView(app),
+            calendar: new CalendarView(app),
+            tasks: new TasksView(app),
+            pomodoro: new PomodoroView(app)
         };
         
-        this.initializeNavigation();
+        this.initializeViewManager();
     }
 
-    initializeNavigation() {
-        const nav = document.querySelector('.bottom-nav');
-        nav.addEventListener('click', (e) => {
-            const navItem = e.target.closest('.bottom-nav-item');
-            if (navItem) {
-                const view = navItem.dataset.view;
+    initializeViewManager() {
+        this.container = document.querySelector('.app-container');
+        this.setupNavigationHandlers();
+        this.showView(this.currentView);
+    }
+
+    setupNavigationHandlers() {
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const view = e.currentTarget.getAttribute('href').substring(1);
                 this.switchView(view);
-            }
+            });
         });
     }
 
@@ -30,7 +36,7 @@ class ViewManager {
         this.views[view].style.display = 'block';
         
         // Update navigation
-        document.querySelectorAll('.bottom-nav-item').forEach(item => {
+        document.querySelectorAll('.nav-item').forEach(item => {
             item.classList.toggle('active', item.dataset.view === view);
         });
         
