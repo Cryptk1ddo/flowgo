@@ -9,10 +9,10 @@ class ViewManager {
             pomodoro: new PomodoroView(app)
         };
         
-        this.initializeViewManager();
+        this.initializeViews();
     }
 
-    initializeViewManager() {
+    initializeViews() {
         this.container = document.querySelector('.app-container');
         this.setupNavigationHandlers();
         this.showView(this.currentView);

@@ -1,0 +1,50 @@
+/* Responsive Utilities */
+.hide-on-mobile {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .hide-on-mobile {
+        display: initial;
+    }
+
+    .hide-on-desktop {
+        display: none;
+    }
+}
+
+/* Responsive Spacing */
+.responsive-padding {
+    padding: var(--container-padding);
+}
+
+.responsive-margin {
+    margin: var(--container-padding);
+}
+
+/* Responsive Typography */
+.responsive-text {
+    font-size: clamp(16px, 2vw, 20px);
+}
+
+.responsive-title {
+    font-size: clamp(24px, 3vw, 32px);
+}
+
+/* Responsive Images */
+.responsive-image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+}
+
+/* Responsive Grid */
+.auto-grid {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(min(100%, var(--min-column-width, 250px)), 1fr)
+    );
+    gap: var(--card-gap);
+} 

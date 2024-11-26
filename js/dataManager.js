@@ -5,29 +5,8 @@ class DataManager {
         this.taskLists = new Map();
         this.pomodoroSessions = new Map();
         
-        // Add debounced save
-        this.saveDebounced = this.debounce(this.saveData.bind(this), 1000);
-        
         // Load data from localStorage
         this.loadData();
-    }
-
-    // Add debounce utility method
-    debounce(fn, delay) {
-        let timeoutId;
-        return function(...args) {
-            clearTimeout(timeoutId);
-            timeoutId = setTimeout(() => fn.apply(this, args), delay);
-        };
-    }
-
-    // Add batch update method
-    batchUpdate(operations) {
-        operations.forEach(op => {
-            const [type, method, ...args] = op;
-            this[`${method}${type}`](...args);
-        });
-        this.saveDebounced();
     }
 
     loadData() {
@@ -55,19 +34,19 @@ class DataManager {
     // Event methods
     addEvent(event) {
         this.events.set(event.id, event);
-        this.saveDebounced();
+        this.saveData();
     }
 
     updateEvent(event) {
         if (this.events.has(event.id)) {
             this.events.set(event.id, event);
-            this.saveDebounced();
+            this.saveData();
         }
     }
 
     deleteEvent(eventId) {
         this.events.delete(eventId);
-        this.saveDebounced();
+        this.saveData();
     }
 
     getEventsInRange(startDate, endDate) {
@@ -79,19 +58,19 @@ class DataManager {
     // Task methods
     addTask(task) {
         this.tasks.set(task.id, task);
-        this.saveDebounced();
+        this.saveData();
     }
 
     updateTask(task) {
         if (this.tasks.has(task.id)) {
             this.tasks.set(task.id, task);
-            this.saveDebounced();
+            this.saveData();
         }
     }
 
     deleteTask(taskId) {
         this.tasks.delete(taskId);
-        this.saveDebounced();
+        this.saveData();
     }
 
     getTasksByList(listId) {
@@ -102,7 +81,7 @@ class DataManager {
     // TaskList methods
     addTaskList(list) {
         this.taskLists.set(list.id, list);
-        this.saveDebounced();
+        this.saveData();
     }
 
     // Pomodoro methods
@@ -115,7 +94,7 @@ class DataManager {
                 this.updateTask(task);
             }
         }
-        this.saveDebounced();
+        this.saveData();
     }
 
     getTaskPomodoroSessions(taskId) {

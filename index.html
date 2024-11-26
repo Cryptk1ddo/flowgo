@@ -6,6 +6,18 @@
     <title>Calendar & Task Manager</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/gridLayout.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/focusMode.css">
+    <link rel="stylesheet" href="css/telegram-components.css">
+    <link rel="stylesheet" href="css/utilities.css">
+    <!-- View-specific stylesheets -->
+    <link rel="stylesheet" href="css/views/dashboard.css">
+    <link rel="stylesheet" href="css/views/calendar.css">
+    <link rel="stylesheet" href="css/views/tasks.css">
+    <link rel="stylesheet" href="css/views/pomodoro.css">
 </head>
 <body>
     <div class="app-header">
@@ -73,7 +85,7 @@
 
         <nav class="bottom-nav">
             <a href="#dashboard" class="nav-item active">
-                <i class="ph ph-chart-line"></i>
+                <i class="ph ph-grid"></i>
                 <span class="nav-label">Dashboard</span>
             </a>
             <a href="#calendar" class="nav-item">
@@ -81,7 +93,7 @@
                 <span class="nav-label">Calendar</span>
             </a>
             <a href="#tasks" class="nav-item">
-                <i class="ph ph-check-circle"></i>
+                <i class="ph ph-check-square"></i>
                 <span class="nav-label">Tasks</span>
             </a>
             <a href="#pomodoro" class="nav-item">
@@ -96,7 +108,9 @@
     <script src="js/dataManager.js"></script>
     <script src="js/calendarManager.js"></script>
     <script src="js/eventManager.js"></script>
-    <script src="js/pomodoro.js"></script>  
+    <script src="js/pomodoro.js"></script>
+    <script src="js/ViewManager.js"></script>
+    <script src="js/app.js"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
