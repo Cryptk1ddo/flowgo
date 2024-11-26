@@ -1,0 +1,138 @@
+/* View Transitions */
+.view {
+    opacity: 0;
+    transform: translateX(20px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.view.active {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Card Animations */
+.card {
+    background: var(--tg-theme-secondary-bg-color);
+    border-radius: var(--border-radius-md);
+    padding: 16px;
+    margin-bottom: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:active {
+    transform: scale(0.98);
+}
+
+/* Button Styles */
+.btn {
+    background: var(--tg-theme-button-color);
+    color: var(--tg-theme-button-text-color);
+    border: none;
+    border-radius: var(--border-radius-sm);
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.btn:active {
+    transform: scale(0.96);
+}
+
+.btn-secondary {
+    background: var(--tg-theme-secondary-bg-color);
+    color: var(--tg-theme-text-color);
+}
+
+/* Enhanced Animations */
+@keyframes slideIn {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* Apply animations */
+.tg-list-item {
+    animation: slideIn 0.3s ease backwards;
+}
+
+.tg-list-item:nth-child(n) {
+    animation-delay: calc(n * 0.05s);
+}
+
+.loading {
+    background: linear-gradient(
+        90deg,
+        var(--tg-theme-secondary-bg-color) 25%,
+        var(--tg-theme-bg-color) 50%,
+        var(--tg-theme-secondary-bg-color) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+.tg-button:active {
+    animation: pulse 0.3s ease;
+}
+
+/* View Transitions */
+.view-transition {
+    position: relative;
+    perspective: 1000px;
+}
+
+.view-enter {
+    animation: viewEnter 0.3s ease forwards;
+}
+
+.view-exit {
+    animation: viewExit 0.3s ease forwards;
+}
+
+@keyframes viewEnter {
+    from {
+        transform: translateX(100%) scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes viewExit {
+    from {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(-100%) scale(0.95);
+        opacity: 0;
+    }
+} 

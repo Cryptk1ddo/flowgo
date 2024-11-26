@@ -5,6 +5,8 @@ class App {
         this.calendarManager = new CalendarManager(this.dataManager);
         this.pomodoroTimer = new PomodoroTimer(this.dataManager);
         this.viewManager = new ViewManager(this);
+        this.touchDragManager = new TouchDragManager(this);
+        this.gridLayoutManager = new GridLayoutManager(this);
         
         this.initializeFullscreenToggle();
         this.initializeDragAndDrop();

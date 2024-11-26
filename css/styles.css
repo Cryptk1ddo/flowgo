@@ -1,15 +1,20 @@
 :root {
-    --tg-theme-bg-color: #fff;
-    --tg-theme-text-color: #000;
-    --tg-theme-button-color: #2481cc;
-    --tg-theme-button-text-color: #fff;
+    --tg-theme-bg-color: var(--tg-theme-bg-color, #fff);
+    --tg-theme-text-color: var(--tg-theme-text-color, #000);
+    --tg-theme-hint-color: var(--tg-theme-hint-color, #999);
+    --tg-theme-link-color: var(--tg-theme-link-color, #2481cc);
+    --tg-theme-button-color: var(--tg-theme-button-color, #2481cc);
+    --tg-theme-button-text-color: var(--tg-theme-button-text-color, #fff);
+    --tg-theme-secondary-bg-color: var(--tg-theme-secondary-bg-color, #f4f4f5);
     --safe-area-inset-top: env(safe-area-inset-top, 0px);
     --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
     --viewport-height: 100vh;
-    --header-height: 60px;
+    --header-height: 56px;
     --bottom-nav-height: 56px;
     --content-padding: 16px;
-    --border-radius: 12px;
+    --border-radius-lg: 16px;
+    --border-radius-md: 12px;
+    --border-radius-sm: 8px;
 }
 
 * {
@@ -19,13 +24,14 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background-color: var(--tg-theme-bg-color);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    background: var(--tg-theme-bg-color);
     color: var(--tg-theme-text-color);
     height: var(--viewport-height);
-    padding-top: var(--safe-area-inset-top);
-    padding-bottom: var(--safe-area-inset-bottom);
+    padding-top: calc(var(--header-height) + var(--safe-area-inset-top));
+    padding-bottom: calc(var(--bottom-nav-height) + var(--safe-area-inset-bottom));
     overflow: hidden;
+    -webkit-font-smoothing: antialiased;
 }
 
 .calendar {
@@ -353,11 +359,20 @@ body.expanded .app-container {
 }
 
 .app-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--header-height);
+    background: var(--tg-theme-bg-color);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 100;
     display: flex;
     align-items: center;
-    padding: 12px;
-    background: var(--tg-theme-bg-color);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 0 16px;
+    padding-top: var(--safe-area-inset-top);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .header-btn {
@@ -441,31 +456,46 @@ body.expanded .app-container {
     right: 0;
     height: var(--bottom-nav-height);
     background: var(--tg-theme-bg-color);
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 100;
     display: flex;
     justify-content: space-around;
     align-items: center;
     padding-bottom: var(--safe-area-inset-bottom);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.bottom-nav-item {
+.nav-item {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 8px;
+    padding: 8px 0;
     color: var(--tg-theme-hint-color);
-    transition: color 0.2s;
+    text-decoration: none;
+    transition: color 0.2s ease;
 }
 
-.bottom-nav-item.active {
+.nav-item.active {
     color: var(--tg-theme-button-color);
+}
+
+.nav-icon {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 4px;
+}
+
+.nav-label {
+    font-size: 12px;
+    font-weight: 500;
 }
 
 /* Card-based Layout */
 .card {
     background: var(--tg-theme-bg-color);
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-lg);
     padding: var(--content-padding);
     margin-bottom: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -509,4 +539,64 @@ body.expanded .app-container {
 
 @keyframes spin {
     to { transform: rotate(360deg); }
+}
+
+/* Drag and Drop Styles */
+.task-item {
+    touch-action: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.task-dragging {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    pointer-events: none;
+}
+
+.task-placeholder {
+    background: rgba(var(--tg-theme-button-color-rgb), 0.1);
+    border: 2px dashed rgba(var(--tg-theme-button-color-rgb), 0.3);
+    border-radius: var(--border-radius-lg);
+    transform: scaleY(0);
+    opacity: 0;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.scroll-zones {
+    position: fixed;
+    pointer-events: none;
+    left: 0;
+    right: 0;
+    height: 100%;
+    z-index: 1000;
+}
+
+.scroll-zone {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 60px;
+}
+
+.scroll-zone-top {
+    top: 0;
+    background: linear-gradient(to bottom, 
+        rgba(var(--tg-theme-bg-color-rgb), 0.2),
+        transparent
+    );
+}
+
+.scroll-zone-bottom {
+    bottom: 0;
+    background: linear-gradient(to top, 
+        rgba(var(--tg-theme-bg-color-rgb), 0.2),
+        transparent
+    );
+}
+
+.is-dragging {
+    cursor: grabbing;
+}
+
+.is-dragging .task-item:not(.task-dragging) {
+    transition: transform 0.2s ease;
 } 
