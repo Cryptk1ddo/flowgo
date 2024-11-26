@@ -4,9 +4,11 @@ class App {
         this.dataManager = new DataManager();
         this.calendarManager = new CalendarManager(this.dataManager);
         this.pomodoroTimer = new PomodoroTimer(this.dataManager);
+        this.viewManager = new ViewManager(this);
         
         this.initializeFullscreenToggle();
         this.initializeDragAndDrop();
+        this.initializeGestures();
     }
 
     initializeFullscreenToggle() {
@@ -40,5 +42,35 @@ class App {
                 this.calendarManager.renderCalendar();
             }
         });
+    }
+
+    initializeGestures() {
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+        });
+        
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].clientX;
+            this.handleSwipe(touchStartX, touchEndX);
+        });
+    }
+
+    handleSwipe(startX, endX) {
+        const SWIPE_THRESHOLD = 50;
+        const views = ['calendar', 'tasks', 'pomodoro'];
+        const currentIndex = views.indexOf(this.viewManager.currentView);
+        
+        if (Math.abs(startX - endX) > SWIPE_THRESHOLD) {
+            if (startX > endX && currentIndex < views.length - 1) {
+                // Swipe left
+                this.viewManager.switchView(views[currentIndex + 1]);
+            } else if (startX < endX && currentIndex > 0) {
+                // Swipe right
+                this.viewManager.switchView(views[currentIndex - 1]);
+            }
+        }
     }
 } 
