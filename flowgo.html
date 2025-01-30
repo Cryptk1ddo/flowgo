@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Task Manager</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .task { background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        #timerSection { margin-top: 20px; padding: 20px; background: #eee; border-radius: 5px; }
+        #timerDisplay { font-size: 48px; margin: 10px 0; }
+        button { padding: 5px 10px; margin-right: 5px; }
+        input, select { margin: 5px; padding: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Task Manager with Pomodoro Timer</h1>
+    
+    <form id="taskForm">
+        <input type="text" id="taskTitle" placeholder="Task title" required>
+        <input type="number" id="pomodoroCount" min="1" value="1" required>
+        <button type="submit">Add Task</button>
+    </form>
+
+    <div id="tasksList"></div>
+
+    <div id="timerSection">
+        <select id="taskSelector">
+            <option value="">Select a task</option>
+        </select>
+        <div id="timerDisplay">25:00</div>
+        <button id="startButton">Start</button>
+        <button id="pauseButton">Pause</button>
+        <button id="resetButton">Reset</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+            function saveTasks() {
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+            }
+
+            function addTask(title, pomodoroCount) {
+                const task = {
+                    id: Date.now(),
+                    title,
+                    totalPomodoros: pomodoroCount,
+                    completedPomodoros: 0
+                };
+                tasks.push(task);
+                saveTasks();
+            }
+
+            function deleteTask(id) {
+                tasks = tasks.filter(task => task.id !== id);
+                saveTasks();
+                renderTasks();
+                renderTaskSelector();
+            }
+
+            function renderTasks() {
+                const tasksList = document.getElementById('tasksList');
+                tasksList.innerHTML = tasks.map(task => `
+                    <div class="task">
+                        <h3>${task.title}</h3>
+                        <p>${task.completedPomodoros}/${task.totalPomodoros} pomodoros</p>
+                        <button onclick="deleteTask(${task.id})">Delete</button>
+                    </div>
+                `).join('');
+            }
+
+            function renderTaskSelector() {
+                const selector = document.getElementById('taskSelector');
+                const incompleteTasks = tasks.filter(task => task.completedPomodoros < task.totalPomodoros);
+                selector.innerHTML = '<option value="">Select a task</option>' + 
+                    incompleteTasks.map(task => `
+                        <option value="${task.id}">${task.title} (${task.totalPomodoros - task.completedPomodoros} left)</option>
+                    `).join('');
+            }
+
+            document.getElementById('taskForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const title = document.getElementById('taskTitle').value;
+                const count = parseInt(document.getElementById('pomodoroCount').value);
+                if (title && count > 0) {
+                    addTask(title, count);
+                    renderTasks();
+                    renderTaskSelector();
+                    e.target.reset();
+                }
+            });
+
+            // Timer handling
+            let timerInterval = null;
+            let isWorkPhase = true;
+            let currentTaskId = null;
+            let endTime = 0;
+            let timeLeft = 25 * 60 * 1000;
+
+            function startTimer(durationMs) {
+                clearInterval(timerInterval);
+                endTime = Date.now() + durationMs;
+                timerInterval = setInterval(() => {
+                    timeLeft = endTime - Date.now();
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        timerInterval = null;
+                        handleTimerEnd();
+                        return;
+                    }
+                    updateDisplay(timeLeft);
+                }, 1000);
+                document.getElementById('startButton').disabled = true;
+                document.getElementById('pauseButton').disabled = false;
+                document.getElementById('resetButton').disabled = false;
+            }
+
+            function updateDisplay(ms) {
+                const minutes = Math.floor(ms / 60000);
+                const seconds = Math.floor((ms % 60000) / 1000);
+                document.getElementById('timerDisplay').textContent = 
+                    `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }
+
+            function handleTimerEnd() {
+                if (isWorkPhase) {
+                    const task = tasks.find(task => task.id === currentTaskId);
+                    if (task) {
+                        task.completedPomodoros++;
+                        if (task.completedPomodoros >= task.totalPomodoros) {
+                            alert(`Task "${task.title}" completed!`);
+                        }
+                        saveTasks();
+                        renderTasks();
+                        renderTaskSelector();
+                    }
+                    isWorkPhase = false;
+                    startTimer(5 * 60 * 1000);
+                } else {
+                    isWorkPhase = true;
+                    currentTaskId = null;
+                    timeLeft = 25 * 60 * 1000;
+                    updateDisplay(timeLeft);
+                    document.getElementById('startButton').disabled = false;
+                }
+                document.getElementById('pauseButton').disabled = true;
+                document.getElementById('resetButton').disabled = true;
+            }
+
+            document.getElementById('startButton').addEventListener('click', () => {
+                if (timerInterval) return;
+
+                if (isWorkPhase) {
+                    const taskId = Number(document.getElementById('taskSelector').value);
+                    if (!taskId) {
+                        alert('Please select a task.');
+                        return;
+                    }
+                    const task = tasks.find(t => t.id === taskId);
+                    if (!task || task.completedPomodoros >= task.totalPomodoros) {
+                        alert('Selected task is already completed.');
+                        return;
+                    }
+                    currentTaskId = taskId;
+                }
+
+                const duration = isWorkPhase ? 25 * 60 * 1000 : 5 * 60 * 1000;
+                startTimer(duration);
+            });
+
+            document.getElementById('pauseButton').addEventListener('click', () => {
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                    timeLeft = endTime - Date.now();
+                    document.getElementById('startButton').disabled = false;
+                    document.getElementById('pauseButton').disabled = true;
+                }
+            });
+
+            document.getElementById('resetButton').addEventListener('click', () => {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                timeLeft = isWorkPhase ? 25 * 60 * 1000 : 5 * 60 * 1000;
+                updateDisplay(timeLeft);
+                document.getElementById('startButton').disabled = false;
+                document.getElementById('pauseButton').disabled = true;
+                document.getElementById('resetButton').disabled = true;
+            });
+
+            // Initial render
+            renderTasks();
+            renderTaskSelector();
+            updateDisplay(timeLeft);
+        });
+    </script>
+</body>
+</html>
