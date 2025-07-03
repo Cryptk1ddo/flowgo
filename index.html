@@ -6,6 +6,14 @@
     <title>DFRNT Community Guides</title>
     <!-- Telegram Web App SDK - Essential for Telegram-specific functionalities -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+    // Event listener for the "Apply for Membership" button within the HTML content.
+    document.getElementById('mainCtaButton').addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent the default link behavior (e.g., navigating to #)
+        // IMPORTANT: Change this line to open your payment.html
+        Telegram.WebApp.openLink('YOUR_HOSTED_URL/payment.html', {try_instant_view: true}); // <--- UPDATE THIS LINE
+    })
+</script>
     <style>
         /* Define CSS variables for Telegram theme colors.
            These will be dynamically updated by the Telegram Web App SDK
