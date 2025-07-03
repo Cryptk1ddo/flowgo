@@ -1,122 +1,423 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Calendar & Task Manager</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/responsive.css">
-    <link rel="stylesheet" href="css/components.css">
-    <link rel="stylesheet" href="css/gridLayout.css">
-    <link rel="stylesheet" href="css/animations.css">
-    <link rel="stylesheet" href="css/focusMode.css">
-    <link rel="stylesheet" href="css/telegram-components.css">
-    <link rel="stylesheet" href="css/utilities.css">
-    <!-- View-specific stylesheets -->
-    <link rel="stylesheet" href="css/views/dashboard.css">
-    <link rel="stylesheet" href="css/views/calendar.css">
-    <link rel="stylesheet" href="css/views/tasks.css">
-    <link rel="stylesheet" href="css/views/pomodoro.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFRNT Community</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+```
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+        color: #ffffff;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    .container {
+        max-width: 420px;
+        margin: 0 auto;
+        padding: 20px 16px;
+        position: relative;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 32px;
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    .logo {
+        font-size: 28px;
+        font-weight: 800;
+        background: linear-gradient(45deg, #ff4500, #ff6b35);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 8px;
+        letter-spacing: 2px;
+    }
+
+    .tagline {
+        color: #888;
+        font-size: 14px;
+        font-weight: 400;
+    }
+
+    .welcome-card {
+        background: rgba(255, 69, 0, 0.1);
+        border: 1px solid rgba(255, 69, 0, 0.3);
+        border-radius: 20px;
+        padding: 24px;
+        margin-bottom: 28px;
+        text-align: center;
+        backdrop-filter: blur(10px);
+        animation: fadeInUp 0.8s ease-out 0.2s both;
+    }
+
+    .welcome-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #ff6b35;
+    }
+
+    .welcome-text {
+        color: #ccc;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .guides-section {
+        margin-bottom: 24px;
+    }
+
+    .section-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        color: #fff;
+        animation: fadeInUp 0.8s ease-out 0.4s both;
+    }
+
+    .bento-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .bento-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 20px 16px;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        backdrop-filter: blur(5px);
+        position: relative;
+        overflow: hidden;
+        min-height: 120px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        animation: fadeInUp 0.8s ease-out calc(0.6s + var(--delay)) both;
+    }
+
+    .bento-card:hover {
+        transform: translateY(-4px);
+        background: rgba(255, 69, 0, 0.1);
+        border-color: rgba(255, 69, 0, 0.4);
+        box-shadow: 0 8px 32px rgba(255, 69, 0, 0.2);
+    }
+
+    .bento-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #ff6b35, transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .bento-card:hover::before {
+        opacity: 1;
+    }
+
+    .bento-icon {
+        font-size: 28px;
+        margin-bottom: 8px;
+        filter: grayscale(1);
+        transition: filter 0.3s ease;
+    }
+
+    .bento-card:hover .bento-icon {
+        filter: grayscale(0);
+    }
+
+    .bento-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: #fff;
+        margin-bottom: 4px;
+    }
+
+    .bento-subtitle {
+        font-size: 11px;
+        color: #888;
+        line-height: 1.3;
+    }
+
+    .featured-card {
+        grid-column: 1 / -1;
+        background: linear-gradient(135deg, rgba(255, 69, 0, 0.15), rgba(255, 107, 53, 0.1));
+        border: 1px solid rgba(255, 69, 0, 0.3);
+        min-height: 100px;
+        padding: 24px;
+    }
+
+    .featured-card .bento-title {
+        font-size: 16px;
+        color: #ff6b35;
+    }
+
+    .featured-card .bento-subtitle {
+        font-size: 12px;
+        color: #ccc;
+    }
+
+    .stats-bar {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 12px;
+        padding: 16px;
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-around;
+        animation: fadeInUp 0.8s ease-out 1.2s both;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 18px;
+        font-weight: 700;
+        color: #ff6b35;
+        margin-bottom: 2px;
+    }
+
+    .stat-label {
+        font-size: 11px;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .floating-action {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 56px;
+        height: 56px;
+        background: linear-gradient(45deg, #ff4500, #ff6b35);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 20px rgba(255, 69, 0, 0.4);
+        transition: all 0.3s ease;
+        animation: fadeInUp 0.8s ease-out 1.4s both;
+    }
+
+    .floating-action:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 30px rgba(255, 69, 0, 0.6);
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 360px) {
+        .container {
+            padding: 16px 12px;
+        }
+        
+        .bento-card {
+            padding: 16px 12px;
+            min-height: 100px;
+        }
+        
+        .bento-title {
+            font-size: 12px;
+        }
+        
+        .bento-subtitle {
+            font-size: 10px;
+        }
+    }
+
+    .pulse {
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(255, 69, 0, 0.4);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(255, 69, 0, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(255, 69, 0, 0);
+        }
+    }
+</style>
+```
+
 </head>
 <body>
-    <div class="app-header">
-        <button id="fullscreenToggle" class="header-btn">
-            <span class="expand-icon">⤢</span>
-        </button>
-        <h1>Calendar & Tasks</h1>
-    </div>
-
-    <div class="app-container">
-        <div class="sidebar" id="taskSidebar">
-            <div class="task-list-header">
-                <h2>Tasks</h2>
-                <button id="addTask" class="add-btn">+</button>
-            </div>
-            <div class="task-list" id="taskList">
-                <!-- Tasks will be populated by JavaScript -->
-            </div>
+    <div class="container">
+        <div class="header">
+            <div class="logo">DFRNT</div>
+            <div class="tagline">Exclusive Community Guides</div>
         </div>
 
-        <div class="main-content">
-            <div class="calendar-container">
-                <div class="calendar">
-                    <div class="calendar-header">
-                        <button class="nav-btn" id="prevMonth">&lt;</button>
-                        <h2 id="monthYear">September 2023</h2>
-                        <button class="nav-btn" id="nextMonth">&gt;</button>
-                    </div>
-                    <div class="weekdays">
-                        <div>Sun</div>
-                        <div>Mon</div>
-                        <div>Tue</div>
-                        <div>Wed</div>
-                        <div>Thu</div>
-                        <div>Fri</div>
-                        <div>Sat</div>
-                    </div>
-                    <div class="days" id="daysGrid">
-                        <!-- Days will be populated by JavaScript -->
-                    </div>
-                </div>
-            </div>
-            
-            <div class="pomodoro-container">
-                <div class="timer-display">
-                    <span id="minutes">25</span>:<span id="seconds">00</span>
-                </div>
-                <div class="timer-controls">
-                    <button class="timer-btn" id="startTimer">Start</button>
-                    <button class="timer-btn" id="pauseTimer">Pause</button>
-                    <button class="timer-btn" id="resetTimer">Reset</button>
-                </div>
-                <div class="session-settings">
-                    <div class="setting">
-                        <label for="workTime">Work (min)</label>
-                        <input type="number" id="workTime" value="25" min="1" max="60">
-                    </div>
-                    <div class="setting">
-                        <label for="breakTime">Break (min)</label>
-                        <input type="number" id="breakTime" value="5" min="1" max="30">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <nav class="bottom-nav">
-            <a href="#dashboard" class="nav-item active">
-                <i class="ph ph-grid"></i>
-                <span class="nav-label">Dashboard</span>
-            </a>
-            <a href="#calendar" class="nav-item">
-                <i class="ph ph-calendar"></i>
-                <span class="nav-label">Calendar</span>
-            </a>
-            <a href="#tasks" class="nav-item">
-                <i class="ph ph-check-square"></i>
-                <span class="nav-label">Tasks</span>
-            </a>
-            <a href="#pomodoro" class="nav-item">
-                <i class="ph ph-timer"></i>
-                <span class="nav-label">Focus</span>
-            </a>
-        </nav>
+```
+    <div class="welcome-card">
+        <div class="welcome-title">Welcome Back!</div>
+        <div class="welcome-text">Access premium guides and resources crafted exclusively for our community members.</div>
     </div>
 
-    <script src="js/telegramUtils.js"></script>
-    <script src="js/models.js"></script>
-    <script src="js/dataManager.js"></script>
-    <script src="js/calendarManager.js"></script>
-    <script src="js/eventManager.js"></script>
-    <script src="js/pomodoro.js"></script>
-    <script src="js/ViewManager.js"></script>
-    <script src="js/app.js"></script>
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            window.app = new App();
-            document.querySelector('.loading-overlay')?.remove();
+    <div class="guides-section">
+        <div class="section-title">📚 Community Guides</div>
+        
+        <div class="bento-grid">
+            <div class="bento-card featured-card" style="--delay: 0s;" onclick="openGuide('getting-started')">
+                <div class="bento-icon">🚀</div>
+                <div class="bento-title">Getting Started</div>
+                <div class="bento-subtitle">Essential first steps for new members</div>
+            </div>
+
+            <div class="bento-card" style="--delay: 0.1s;" onclick="openGuide('trading')">
+                <div class="bento-icon">📈</div>
+                <div class="bento-title">Trading</div>
+                <div class="bento-subtitle">Advanced strategies</div>
+            </div>
+
+            <div class="bento-card" style="--delay: 0.2s;" onclick="openGuide('defi')">
+                <div class="bento-icon">🏦</div>
+                <div class="bento-title">DeFi</div>
+                <div class="bento-subtitle">Protocols & yields</div>
+            </div>
+
+            <div class="bento-card" style="--delay: 0.3s;" onclick="openGuide('nft')">
+                <div class="bento-icon">🎨</div>
+                <div class="bento-title">NFTs</div>
+                <div class="bento-subtitle">Collection insights</div>
+            </div>
+
+            <div class="bento-card" style="--delay: 0.4s;" onclick="openGuide('research')">
+                <div class="bento-icon">🔬</div>
+                <div class="bento-title">Research</div>
+                <div class="bento-subtitle">Market analysis</div>
+            </div>
+
+            <div class="bento-card" style="--delay: 0.5s;" onclick="openGuide('tools')">
+                <div class="bento-icon">🛠️</div>
+                <div class="bento-title">Tools</div>
+                <div class="bento-subtitle">Essential resources</div>
+            </div>
+
+            <div class="bento-card" style="--delay: 0.6s;" onclick="openGuide('community')">
+                <div class="bento-icon">👥</div>
+                <div class="bento-title">Community</div>
+                <div class="bento-subtitle">Chat & networking</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-number">247</div>
+            <div class="stat-label">Members</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">15</div>
+            <div class="stat-label">Guides</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">98%</div>
+            <div class="stat-label">Success</div>
+        </div>
+    </div>
+</div>
+
+<div class="floating-action pulse" onclick="openChat()">
+    <span style="color: white; font-size: 24px;">💬</span>
+</div>
+
+<script>
+    function openGuide(guideType) {
+        // Haptic feedback for mobile
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+        }
+        
+        // Simulate navigation to guide
+        const card = event.currentTarget;
+        card.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            card.style.transform = '';
+            alert(`Opening ${guideType} guide...`);
+        }, 150);
+    }
+
+    function openChat() {
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+        }
+        alert('Opening community chat...');
+    }
+
+    // Initialize Telegram WebApp
+    if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.ready();
+        window.Telegram.WebApp.expand();
+        
+        // Set theme colors
+        window.Telegram.WebApp.setHeaderColor('#0a0a0a');
+        window.Telegram.WebApp.setBackgroundColor('#0a0a0a');
+        
+        // Enable haptic feedback
+        window.Telegram.WebApp.enableClosingConfirmation();
+    }
+
+    // Add touch interactions
+    document.querySelectorAll('.bento-card').forEach(card => {
+        card.addEventListener('touchstart', function() {
+            this.style.transform = 'scale(0.98)';
         });
-    </script>
+        
+        card.addEventListener('touchend', function() {
+            this.style.transform = '';
+        });
+    });
+
+    // Simulate real-time updates
+    setInterval(() => {
+        const memberCount = document.querySelector('.stat-number');
+        const currentCount = parseInt(memberCount.textContent);
+        if (Math.random() > 0.95) {
+            memberCount.textContent = currentCount + 1;
+            memberCount.style.color = '#00ff88';
+            setTimeout(() => {
+                memberCount.style.color = '#ff6b35';
+            }, 1000);
+        }
+    }, 5000);
+</script>
+```
+
 </body>
-</html> 
+</html>
