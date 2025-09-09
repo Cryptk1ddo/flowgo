@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 2%; /* #050505 */
+    --foreground: 0 0% 90%; /* #E6E6E6 */
+    --accent: 10 100% 59%; /* #FF4C2E */
+    --accent-foreground: 0 0% 100%;
+    --muted: 0 0% 54.5%; /* #8b8b8b */
+    --muted-foreground: 0 0% 90%;
+    --card: 0 0% 5%;
+    --border: 0 0% 15%;
+    --radius: 0.5rem;
+  }
+ 
+  .dark {
+    /* Kept for shadcn compatibility, but we are dark by default */
+    --background: 0 0% 2%;
+    --foreground: 0 0% 90%;
+    --accent: 10 100% 59%;
+    --accent-foreground: 0 0% 100%;
+    --muted: 0 0% 54.5%;
+    --muted-foreground: 0 0% 90%;
+    --card: 0 0% 5%;
+    --border: 0 0% 15%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 2%; /* #050505 */
+    --foreground: 0 0% 90%; /* #E6E6E6 */
+    --accent: 10 100% 59%; /* #FF4C2E */
+    --accent-foreground: 0 0% 100%;
+    --muted: 0 0% 54.5%; /* #8b8b8b */
+    --muted-foreground: 0 0% 90%;
+    --card: 0 0% 5%;
+    --border: 0 0% 15%;
+    --radius: 0.5rem;
+  }
+ 
+  .dark {
+    /* Kept for shadcn compatibility, but we are dark by default */
+    --background: 0 0% 2%;
+    --foreground: 0 0% 90%;
+    --accent: 10 100% 59%;
+    --accent-foreground: 0 0% 100%;
+    --muted: 0 0% 54.5%;
+    --muted-foreground: 0 0% 90%;
+    --card: 0 0% 5%;
+    --border: 0 0% 15%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
